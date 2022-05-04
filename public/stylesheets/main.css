@@ -1,0 +1,277 @@
+:root {
+  --max-width: 1000px;
+  --link-color: #006cd9;
+  --logo-color: #0078ff;
+}
+html {
+  color: #333;
+  background-color: #fff;
+  font-family: sans-serif;
+  font-size: 15px;
+  line-height: 1.45;
+  box-sizing: border-box;
+  overflow-y: scroll;
+  -webkit-text-size-adjust: 100%;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --link-color: #1482d0;
+  }
+  html {
+    color: #ddd;
+    background-color: #000;
+  }
+  .darkinvert {
+    filter: invert(1) hue-rotate(180deg);
+  }
+}
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+body {
+  margin: 0;
+}
+img {
+  vertical-align: top;
+}
+a {
+  text-decoration: none;
+}
+main, article, nav, header, footer {
+  display: block;
+}
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.3;
+}
+h1 {
+  font-size: 1.5em;
+}
+h2 {
+  font-size: 1.17em;
+}
+h3 {
+  font-size: 1.1em;
+}
+p, h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  margin-bottom: 12px;
+}
+h2:not(:first-child),
+h3:not(:first-child) {
+  margin-top: 2em;
+}
+
+/** Code snippets */
+code, pre {
+  font-family: Menlo, Consolas, monospace;
+}
+pre.hljs {
+  padding: 14px 17px;
+  border-radius: 4px;
+}
+code.hljs {
+  display: inline;
+  padding: 1px 4px;
+  border-radius: 2px;
+}
+
+/** Block quotes */
+blockquote {
+  border-left: 10px solid #eee;
+  font-size: 120%;
+  margin: 0;
+  padding: 10px 20px;
+  quotes: '\201C' '\201D' '\2018' '\2019';
+}
+blockquote::before {
+  content: open-quote;
+  font-family: sans-serif;
+  font-size: 4em;
+  line-height: 0;
+  color: #e8e8e8;
+  margin-right: 0.25em;
+  vertical-align: -0.4em;
+}
+blockquote p {
+  margin: 0 0 10px;
+}
+blockquote footer {
+  font-size: 80%;
+  color: #777;
+}
+blockquote footer::before {
+  content: '\2014\00A0';
+}
+blockquote > p:last-child,
+blockquote > ol:last-child,
+blockquote > ul:last-child {
+  margin-bottom: 0;
+}
+
+/*
+ * Container
+ */
+.Container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+}
+@supports (padding: env(safe-area-inset-left)) {
+  .Container {
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/**
+ * Navigation
+ */
+header {
+  line-height: 1;
+  border-bottom: 1px solid #d8d8d8;
+  background-color: #fcfcfc;
+  color: #999;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+}
+header a {
+  color: inherit;
+  display: inline-block;
+  vertical-align: top;
+}
+header .Logo {
+  opacity: 0.25;
+  filter: grayscale(100%);
+  outline: none;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+}
+header .Logo:hover,
+header .Logo:focus {
+  filter: none;
+  opacity: 1;
+}
+header .Logo > img {
+  width: 25px;
+  height: 22px;
+  margin: 17px 12px 18px;
+}
+header ol {
+  float: right;
+  padding: 0;
+  margin: 0;
+}
+header li {
+  display: inline-block;
+}
+header li a {
+  display: inline-block;
+  padding: 21px 18px;
+}
+header li a:focus,
+header li a:hover {
+  background: #f7f7f7;
+  color: #666;
+}
+header li a.active {
+  color: #555;
+}
+@media (max-width: 812px) {
+  header {
+    font-size: 13px;
+  }
+  header .Logo > img {
+    margin: 12px 12px 13px;
+  }
+  header li a {
+    padding: 17px 12px;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  header {
+    background: #222;
+    border-color: #111;
+  }
+  header .Logo {
+    opacity: .66;
+  }
+  header li a:hover,
+  header li a:focus {
+    color: #8a8a8a;
+    background: #2d2d2d;
+  }
+  header li a.active {
+    color: #999;
+    background: #333;
+  }
+}
+
+/**
+ * Main content
+ */
+main {
+  padding-top: 15px;
+}
+main a {
+  color: var(--link-color);
+}
+main a:hover {
+  text-decoration: underline;
+}
+
+/**
+ * Blog
+ */
+.BlogPost .PublishDate {
+  float: right;
+  color: #999;
+  line-height: 1.5;
+}
+
+/**
+ * Hello on portfolio page
+ */
+.Hello {
+  font-size: 24px;
+  font-weight: bold;
+  color: #1482d0;
+}
+.Hello a {
+  float: right;
+  border: none;
+  margin-left: 4px;
+}
+.Hello p {
+  margin: 0;
+}
+
+/**
+ * ProjectCard on portfolio page
+ */
+article {
+  margin-bottom: 20px;
+}
+article::after {
+  content: '';
+  clear: both;
+  display: table;
+}
+article .Image {
+  display: block;
+  border: none;
+}
+article .Image img {
+  max-width: 100%;
+}
+article {
+  padding: 12px;
+}
+@media (min-width: 812px) {
+  article .Image {
+    float: right;
+    margin-left: 20px;
+  }
+}
+@media (prefers-color-scheme: dark) {
+  article {
+    background-color: #222;
+    border-color: transparent;
+  }
+}

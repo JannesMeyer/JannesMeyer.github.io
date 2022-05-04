@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "esModuleInterop": true,
+        "moduleResolution": "Node",
+        "module": "commonjs",
+        "target": "es2018",
+        "strict": true,
+        "noFallthroughCasesInSwitch": true,
+        "noUnusedParameters": true,
+        "noUnusedLocals": true,
+        "jsx": "react",
+        "lib": ["es2018"],
+        "outDir": "../dist"
+    }
+}

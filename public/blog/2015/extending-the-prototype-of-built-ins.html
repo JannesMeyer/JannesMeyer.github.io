@@ -1,0 +1,49 @@
+<!DOCTYPE html><html><head><title>The JavaScript Taboo: Extending Built-In Objects</title><meta http-equiv="X-UA-Compatible" content="IE=edge"/><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/><link rel="icon" href="/images/favicon.png"/><link rel="stylesheet" href="/stylesheets/main.css?v=5"/><link rel="alternate" href="/blog/feed.xml" type="application/atom+xml"/><link rel="stylesheet" href="/stylesheets/code-light.css" media="(prefers-color-scheme: no-preference), (prefers-color-scheme: light)"/><link rel="stylesheet" href="/stylesheets/code-dark.css" media="(prefers-color-scheme: dark)"/></head><body><header><nav class="Container"><a href="/" class="Logo" aria-hidden="true" tabindex="-1"><img src="/images/logo.png"/></a><ol><li><a href="/">Portfolio</a></li><li><a href="/blog/" class="active">Blog</a></li><li><a href="/contact">Contact</a></li><li><a href="https://github.com/JannesMeyer">GitHub</a></li></ol></nav></header><main class="Container"><article class="BlogPost"><time class="PublishDate">18 May 2015</time><h1>The JavaScript Taboo: Extending Built-In Objects</h1><div><p>It is common knowledge that modifying the prototype of built-in JavaScript objects (<code class="hljs">Array</code>, <code class="hljs">String</code>, <code class="hljs">HTMLElement</code>, etc.) is a bad idea.</p>
+<p><a href="https://en.wikipedia.org/wiki/Prototype_JavaScript_Framework">Prototype.js</a>, one of the first popular JavaScript frameworks of the AJAX era, made heavy use of extending the DOM, but then came jQuery and pretty much killed it, because it wrapped everything in <code class="hljs">$()</code> instead of extending prototypes, which is safer in terms of compatibility with other libraries and browser updates.</p>
+<p><a name="continue"></a></p>
+<blockquote>
+<p>DOM extension is one of the biggest mistakes Prototype.js has ever done.</p>
+<footer>Kangax (of Prototype Core), <cite><a href="http://perfectionkills.com/whats-wrong-with-extending-the-dom/">What's wrong with extending the DOM</a></cite></footer>
+</blockquote>
+<p>Since then it has been a taboo to extend the prototype of built-in objects and the language feature has been largely forgotten and replaced by the much slower process of adding new methods through standardization, which takes much longer and only covers the most generic use-cases.</p>
+<p>Look at these two made-up examples and tell me which one is easier to read:</p>
+<pre class="hljs"><span class="hljs-keyword">var</span> numbers = [<span class="hljs-number">4</span>, <span class="hljs-number">9</span>, <span class="hljs-number">8</span>];
+
+<span class="hljs-comment">// Using a function</span>
+includes(numbers, <span class="hljs-number">8</span>);
+
+<span class="hljs-comment">// Using Array.prototype.includes</span>
+numbers.includes(<span class="hljs-number">8</span>);</pre><p>Are we eternally condemned to a future where our JavaScript code looks like the first example? Sure, ES6 defines <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes">Array.prototype.includes</a>, but what about cases where we want to provide our own functions?</p>
+<p>The problem is, of course, that prototype extensions are <strong>global</strong>. But JavaScript has come a long way since its inception and a lot of its “bad parts” are being fixed. So why don&#39;t we fix this one as well and standardize <strong>local</strong> prototype extensions? It could look like this, for example:</p>
+<pre class="hljs"><span class="hljs-keyword">import</span> <span class="hljs-built_in">Array</span>.{ first } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;array-extensions&#x27;</span>;
+
+<span class="hljs-comment">// Importing every named export (use with care)</span>
+<span class="hljs-keyword">import</span> <span class="hljs-built_in">Array</span>.* <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;array-extensions&#x27;</span>;
+
+<span class="hljs-comment">// Polyfills would continue to work through imports with side-effects</span>
+<span class="hljs-comment">// to not overshadow existing implementations:</span>
+<span class="hljs-keyword">import</span> <span class="hljs-string">&#x27;array-polyfills&#x27;</span>;
+
+<span class="hljs-comment">// Let&#x27;s use our fancy new Array method</span>
+<span class="hljs-keyword">var</span> numbers = [<span class="hljs-number">4</span>, <span class="hljs-number">9</span>, <span class="hljs-number">8</span>];
+numbers.first(); <span class="hljs-comment">// 4</span></pre><p>Of course this is not backwards compatible. But maybe it can be transpiled. How could we translate the above snippet to ES5, for example?</p>
+<p>If we know for sure that the variable will always be an Array and never change its type (which is not guaranteed by JavaScript as a dynamically-typed languages, unfortunately) we could rewrite it like in the following snippet.</p>
+<p>Tools like TypeScript and Flow could help to ensure type-safety. (It&#39;s funny that JavaScript is starting to move towards static typing. ActionScript introduced optional static typing 12 years ago.)</p>
+<pre class="hljs"><span class="hljs-keyword">var</span> first = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;array-extensions&#x27;</span>).first;
+
+<span class="hljs-keyword">var</span> numbers = [<span class="hljs-number">4</span>, <span class="hljs-number">9</span>, <span class="hljs-number">8</span>];
+first.call(numbers); <span class="hljs-comment">// 4</span></pre><p>That this concept works is proven by things like <a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/CustomizingExistingClasses/CustomizingExistingClasses.html">categories in Objective-C</a>. Such a category makes it possible to add methods to an existing class, even if it is a class from a framework and you don&#39;t have the code for it. The category&#39;s methods are only available <strong>locally</strong> – like it should be – in source files that have included it.</p>
+<p>One of my favourite examples of this is how AFNetworking adds <a href="https://github.com/AFNetworking/AFNetworking/blob/583742a539f596f98c10953d8aa8ae260cf18d2a/UIKit%2BAFNetworking/UIImageView%2BAFNetworking.m#L113"><code class="hljs">setImageWithURL:placeholderImage:</code></a> to the Apple-provided <code class="hljs">UIImageView</code> class for asynchronous image loading and caching from the web. No subclassing required.</p>
+<pre class="hljs"><span class="hljs-built_in">NSURL</span>* url = [<span class="hljs-built_in">NSURL</span> URLWithString:<span class="hljs-string">@&quot;http://example.com/image.png&quot;</span>]
+
+[imageView setImageWithURL:url
+          placeholderImage:[<span class="hljs-built_in">UIImage</span> imageNamed:<span class="hljs-string">@&quot;placeholder.png&quot;</span>]];</pre><p>Apple even uses categories extensively in their own libraries. For example, UIKit adds a lot of convenience methods to the more basic Foundation classes (<code class="hljs">NSArray</code>, <code class="hljs">NSString</code>, …).</p>
+<p>Let&#39;s hope we can fix JavaScript prototype extension of built-ins and convert it into another “Good Part”.</p>
+<h3 id="see-also">See also</h3>
+<ul>
+<li><a href="https://johnresig.com/blog/getelementsbyclassname-pre-prototype-16/">getElementsByClassName pre Prototype 1.6</a>, 2008, John Resig</li>
+<li><a href="https://humanwhocodes.com/blog/2010/03/02/maintainable-javascript-dont-modify-objects-you-down-own/">Maintainable JavaScript: Don’t modify objects you don’t own</a>, 2010, Nicholas C. Zakas</li>
+<li><a href="http://lea.verou.me/2015/04/idea-extending-native-dom-prototypes-without-collisions/">Extending native DOM prototypes without collisions</a>, 2015, Lea Verou</li>
+</ul>
+<p><a href="https://news.ycombinator.com/item?id=9565105">HN comments</a></p>
+</div></article></main></body></html>
