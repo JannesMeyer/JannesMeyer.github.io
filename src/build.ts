@@ -6,7 +6,7 @@ import Route from './classes/Route';
 import ArticleRoute from './classes/ArticleRoute';
 
 const baseUrl = 'https://jannesmeyer.com';
-const outputDir = path.join(__dirname, '../public');
+const outputDir = path.join(__dirname, '../docs');
 const modulesDir = path.join(__dirname, '../node_modules');
 
 // Render files with React
