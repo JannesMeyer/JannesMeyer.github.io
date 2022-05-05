@@ -1,6 +1,6 @@
 import React from 'react';
 import Master from '../components/Master';
-import BlogPost from '../components/BlogPost';
+import { BlogPost } from '../components/BlogPost';
 import ArticleRoute from '../classes/ArticleRoute';
 
 let head = <>
