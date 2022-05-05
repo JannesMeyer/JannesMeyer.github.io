@@ -3,6 +3,7 @@ import React from 'react';
 interface P {
 	path: string;
 	href: string;
+	children: React.ReactNode;
 }
 
 /**

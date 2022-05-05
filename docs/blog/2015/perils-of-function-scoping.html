@@ -10,11 +10,11 @@
   <span class="hljs-string">&#x27;Photo 2.jpg&#x27;</span>,
   <span class="hljs-string">&#x27;Photo 3.jpg&#x27;</span>
 ];</pre><p>In this example we are interested in the result of <code class="hljs">fs.stat</code> for each of those files. So we iterate through the array using a <code class="hljs">for</code> loop and call the function with a callback:</p>
-<pre class="hljs"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; files.length; ++i) {
+<pre class="hljs"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; files.<span class="hljs-property">length</span>; ++i) {
   <span class="hljs-keyword">var</span> file = files[i];
 
-  fs.stat(file, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">callback</span>(<span class="hljs-params">err, stats</span>) </span>{
-    <span class="hljs-built_in">console</span>.log(file);
+  fs.<span class="hljs-title function_">stat</span>(file, <span class="hljs-keyword">function</span> <span class="hljs-title function_">callback</span>(<span class="hljs-params">err, stats</span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(file);
   });
 }</pre><p>And here comes the output of this fabulous script:</p>
 <pre class="hljs">Photo 3.jpg
@@ -22,34 +22,34 @@ Photo 3.jpg
 Photo 3.jpg</pre><p>Oops, how did that happen? The callback function keeps a closure of the <code class="hljs">file</code> variable and then the value of that <em>one</em> variable is reassigned on every iteration of the loop. So the problem is, that we have <em>three</em> closures of the same variable instead of <em>three</em> closures to separate variables.</p>
 <h2 id="a-possible-solution-let">A Possible Solution: <code class="hljs">let</code></h2>
 <p>Luckily we heard about this crazy new thing in JavaScript called <code class="hljs">let</code> which gives us block-scoping:</p>
-<pre class="hljs"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; files.length; ++i) {
+<pre class="hljs"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; files.<span class="hljs-property">length</span>; ++i) {
   <span class="hljs-keyword">let</span> file = files[i];
 <span class="hljs-comment">// ^--- the only change</span>
-  fs.stat(file, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">callback</span>(<span class="hljs-params">err, stats</span>) </span>{
-    <span class="hljs-built_in">console</span>.log(file);
+  fs.<span class="hljs-title function_">stat</span>(file, <span class="hljs-keyword">function</span> <span class="hljs-title function_">callback</span>(<span class="hljs-params">err, stats</span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(file);
   });
 }</pre><p>Now the iteration works as expected:</p>
 <pre class="hljs">Photo 1.jpg
 Photo 2.jpg
 Photo 3.jpg</pre><h2 id="another-solution-arrayprototypeforeach">Another Solution: <code class="hljs">Array.prototype.forEach</code></h2>
 <p>On first sight, using a <code class="hljs">for</code> loop and and a <code class="hljs">Array.prototype.forEach</code> construct for array iteration might seem identical in behavior, but they actually differ slightly: The <code class="hljs">forEach</code> approach gives you a new scope on every iteration. Whereas an ordinary <code class="hljs">for</code> loop takes place inside of the same scope during the complete iteration.</p>
-<pre class="hljs">files.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">file</span>) </span>{
-  fs.stat(file, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">callback</span>(<span class="hljs-params">err, stats</span>) </span>{
-    <span class="hljs-built_in">console</span>.log(file);
+<pre class="hljs">files.<span class="hljs-title function_">forEach</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">file</span>) {
+  fs.<span class="hljs-title function_">stat</span>(file, <span class="hljs-keyword">function</span> <span class="hljs-title function_">callback</span>(<span class="hljs-params">err, stats</span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(file);
   });
 });</pre><p>And we get the correct output as well.</p>
 <h2 id="so-should-i-use-let-for-everything-now">So, should I use <code class="hljs">let</code> for everything now?</h2>
 <p>First of all, not all JavaScript runtimes support <code class="hljs">let</code>  yet (node.js, IE&lt;11 and Safari are the biggest blockers currently), so you have to use transpilation which comes with a small cost.</p>
 <p>With the Babel transpiler (v5.4.3) the first solution from above is translated to a function that is invoked on every iteration:</p>
-<pre class="hljs"><span class="hljs-keyword">var</span> _loop = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+<pre class="hljs"><span class="hljs-keyword">var</span> _loop = <span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) {
   <span class="hljs-keyword">var</span> file = files[i];
-  fs.stat(file, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">callback</span>(<span class="hljs-params">err, stats</span>) </span>{
-    <span class="hljs-built_in">console</span>.log(file);
+  fs.<span class="hljs-title function_">stat</span>(file, <span class="hljs-keyword">function</span> <span class="hljs-title function_">callback</span>(<span class="hljs-params">err, stats</span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(file);
   });
 };
 
-<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; files.length; ++i) {
-  _loop();
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; files.<span class="hljs-property">length</span>; ++i) {
+  <span class="hljs-title function_">_loop</span>();
 }</pre><p>This is a great solution performance-wise and, as a consequence, there is no reason to not replace every instance of <code class="hljs">var</code> with <code class="hljs">let</code> even in large codebases if you are willing to use Babel or you are only targeting environments like io.js or Firefox/Chrome/IE11 which support the <code class="hljs">let</code> statement natively.</p>
 <p><a href="https://news.ycombinator.com/item?id=9562506">HN comments</a></p>
 </div></article></main></body></html>

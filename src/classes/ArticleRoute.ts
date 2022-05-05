@@ -1,11 +1,11 @@
 import fs from 'fs';
-import marked from 'marked';
+import { marked } from 'marked';
 import hljs from 'highlight.js';
 import Route from './Route';
 
 const CUT_MARKER = '- - -';
 const renderer = new marked.Renderer();
-renderer.code = (code, lang) => '<pre class="hljs">' + hljs.highlight(lang || 'plaintext', code).value + '</pre>';
+renderer.code = (code, lang) => '<pre class="hljs">' + hljs.highlight(code, { language: lang || 'plaintext' }).value + '</pre>';
 renderer.codespan = (code) => '<code class="hljs">' + code + '</code>';
 
 export default class ArticleRoute extends Route {
@@ -21,7 +21,7 @@ export default class ArticleRoute extends Route {
 		super(path, view);
 		this.date = date;
 		this.dateStr = date.toLocaleString('en-UK', { year: 'numeric', month: 'long', day: 'numeric' });
-		
+
 		// Use synchronous file reading
 		let text = fs.readFileSync(file, { encoding: 'utf-8' });
 
@@ -42,7 +42,7 @@ export default class ArticleRoute extends Route {
 			this.previewHTML = renderMarkdown(text.slice(0, cutMarkerPos));
 			text = text.replace(CUT_MARKER, '<a name="continue"></a>');
 		}
-		
+
 		// Render content
 		this.contentHTML = renderMarkdown(text);
 	}

@@ -81,15 +81,15 @@ sock.sendto(<span class="hljs-string">&#x27;\xFF&#x27;</span> * <span class="hlj
 <pre class="hljs"><span class="hljs-keyword">var</span> numbers = [<span class="hljs-number">4</span>, <span class="hljs-number">9</span>, <span class="hljs-number">8</span>];
 
 <span class="hljs-comment">// Using a function</span>
-includes(numbers, <span class="hljs-number">8</span>);
+<span class="hljs-title function_">includes</span>(numbers, <span class="hljs-number">8</span>);
 
 <span class="hljs-comment">// Using Array.prototype.includes</span>
-numbers.includes(<span class="hljs-number">8</span>);</pre><p>Are we eternally condemned to a future where our JavaScript code looks like the first example? Sure, ES6 defines <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes">Array.prototype.includes</a>, but what about cases where we want to provide our own functions?</p>
+numbers.<span class="hljs-title function_">includes</span>(<span class="hljs-number">8</span>);</pre><p>Are we eternally condemned to a future where our JavaScript code looks like the first example? Sure, ES6 defines <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/includes">Array.prototype.includes</a>, but what about cases where we want to provide our own functions?</p>
 <p>The problem is, of course, that prototype extensions are <strong>global</strong>. But JavaScript has come a long way since its inception and a lot of its “bad parts” are being fixed. So why don&#39;t we fix this one as well and standardize <strong>local</strong> prototype extensions? It could look like this, for example:</p>
-<pre class="hljs"><span class="hljs-keyword">import</span> <span class="hljs-built_in">Array</span>.{ first } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;array-extensions&#x27;</span>;
+<pre class="hljs"><span class="hljs-keyword">import</span> <span class="hljs-title class_">Array</span>.{ first } <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;array-extensions&#x27;</span>;
 
 <span class="hljs-comment">// Importing every named export (use with care)</span>
-<span class="hljs-keyword">import</span> <span class="hljs-built_in">Array</span>.* <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;array-extensions&#x27;</span>;
+<span class="hljs-keyword">import</span> <span class="hljs-title class_">Array</span>.* <span class="hljs-keyword">from</span> <span class="hljs-string">&#x27;array-extensions&#x27;</span>;
 
 <span class="hljs-comment">// Polyfills would continue to work through imports with side-effects</span>
 <span class="hljs-comment">// to not overshadow existing implementations:</span>
@@ -97,13 +97,13 @@ numbers.includes(<span class="hljs-number">8</span>);</pre><p>Are we eternally c
 
 <span class="hljs-comment">// Let&#x27;s use our fancy new Array method</span>
 <span class="hljs-keyword">var</span> numbers = [<span class="hljs-number">4</span>, <span class="hljs-number">9</span>, <span class="hljs-number">8</span>];
-numbers.first(); <span class="hljs-comment">// 4</span></pre><p>Of course this is not backwards compatible. But maybe it can be transpiled. How could we translate the above snippet to ES5, for example?</p>
+numbers.<span class="hljs-title function_">first</span>(); <span class="hljs-comment">// 4</span></pre><p>Of course this is not backwards compatible. But maybe it can be transpiled. How could we translate the above snippet to ES5, for example?</p>
 <p>If we know for sure that the variable will always be an Array and never change its type (which is not guaranteed by JavaScript as a dynamically-typed languages, unfortunately) we could rewrite it like in the following snippet.</p>
 <p>Tools like TypeScript and Flow could help to ensure type-safety. (It&#39;s funny that JavaScript is starting to move towards static typing. ActionScript introduced optional static typing 12 years ago.)</p>
-<pre class="hljs"><span class="hljs-keyword">var</span> first = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;array-extensions&#x27;</span>).first;
+<pre class="hljs"><span class="hljs-keyword">var</span> first = <span class="hljs-built_in">require</span>(<span class="hljs-string">&#x27;array-extensions&#x27;</span>).<span class="hljs-property">first</span>;
 
 <span class="hljs-keyword">var</span> numbers = [<span class="hljs-number">4</span>, <span class="hljs-number">9</span>, <span class="hljs-number">8</span>];
-first.call(numbers); <span class="hljs-comment">// 4</span></pre><p>That this concept works is proven by things like <a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/CustomizingExistingClasses/CustomizingExistingClasses.html">categories in Objective-C</a>. Such a category makes it possible to add methods to an existing class, even if it is a class from a framework and you don&#39;t have the code for it. The category&#39;s methods are only available <strong>locally</strong> – like it should be – in source files that have included it.</p>
+first.<span class="hljs-title function_">call</span>(numbers); <span class="hljs-comment">// 4</span></pre><p>That this concept works is proven by things like <a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/ProgrammingWithObjectiveC/CustomizingExistingClasses/CustomizingExistingClasses.html">categories in Objective-C</a>. Such a category makes it possible to add methods to an existing class, even if it is a class from a framework and you don&#39;t have the code for it. The category&#39;s methods are only available <strong>locally</strong> – like it should be – in source files that have included it.</p>
 <p>One of my favourite examples of this is how AFNetworking adds <a href="https://github.com/AFNetworking/AFNetworking/blob/583742a539f596f98c10953d8aa8ae260cf18d2a/UIKit%2BAFNetworking/UIImageView%2BAFNetworking.m#L113"><code class="hljs">setImageWithURL:placeholderImage:</code></a> to the Apple-provided <code class="hljs">UIImageView</code> class for asynchronous image loading and caching from the web. No subclassing required.</p>
 <pre class="hljs"><span class="hljs-built_in">NSURL</span>* url = [<span class="hljs-built_in">NSURL</span> URLWithString:<span class="hljs-string">@&quot;http://example.com/image.png&quot;</span>]
 
@@ -142,11 +142,11 @@ first.call(numbers); <span class="hljs-comment">// 4</span></pre><p>That this co
   <span class="hljs-string">&#x27;Photo 2.jpg&#x27;</span>,
   <span class="hljs-string">&#x27;Photo 3.jpg&#x27;</span>
 ];</pre><p>In this example we are interested in the result of <code class="hljs">fs.stat</code> for each of those files. So we iterate through the array using a <code class="hljs">for</code> loop and call the function with a callback:</p>
-<pre class="hljs"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; files.length; ++i) {
+<pre class="hljs"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; files.<span class="hljs-property">length</span>; ++i) {
   <span class="hljs-keyword">var</span> file = files[i];
 
-  fs.stat(file, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">callback</span>(<span class="hljs-params">err, stats</span>) </span>{
-    <span class="hljs-built_in">console</span>.log(file);
+  fs.<span class="hljs-title function_">stat</span>(file, <span class="hljs-keyword">function</span> <span class="hljs-title function_">callback</span>(<span class="hljs-params">err, stats</span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(file);
   });
 }</pre><p>And here comes the output of this fabulous script:</p>
 <pre class="hljs">Photo 3.jpg
@@ -154,34 +154,34 @@ Photo 3.jpg
 Photo 3.jpg</pre><p>Oops, how did that happen? The callback function keeps a closure of the <code class="hljs">file</code> variable and then the value of that <em>one</em> variable is reassigned on every iteration of the loop. So the problem is, that we have <em>three</em> closures of the same variable instead of <em>three</em> closures to separate variables.</p>
 <h2 id="a-possible-solution-let">A Possible Solution: <code class="hljs">let</code></h2>
 <p>Luckily we heard about this crazy new thing in JavaScript called <code class="hljs">let</code> which gives us block-scoping:</p>
-<pre class="hljs"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; files.length; ++i) {
+<pre class="hljs"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; files.<span class="hljs-property">length</span>; ++i) {
   <span class="hljs-keyword">let</span> file = files[i];
 <span class="hljs-comment">// ^--- the only change</span>
-  fs.stat(file, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">callback</span>(<span class="hljs-params">err, stats</span>) </span>{
-    <span class="hljs-built_in">console</span>.log(file);
+  fs.<span class="hljs-title function_">stat</span>(file, <span class="hljs-keyword">function</span> <span class="hljs-title function_">callback</span>(<span class="hljs-params">err, stats</span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(file);
   });
 }</pre><p>Now the iteration works as expected:</p>
 <pre class="hljs">Photo 1.jpg
 Photo 2.jpg
 Photo 3.jpg</pre><h2 id="another-solution-arrayprototypeforeach">Another Solution: <code class="hljs">Array.prototype.forEach</code></h2>
 <p>On first sight, using a <code class="hljs">for</code> loop and and a <code class="hljs">Array.prototype.forEach</code> construct for array iteration might seem identical in behavior, but they actually differ slightly: The <code class="hljs">forEach</code> approach gives you a new scope on every iteration. Whereas an ordinary <code class="hljs">for</code> loop takes place inside of the same scope during the complete iteration.</p>
-<pre class="hljs">files.forEach(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">file</span>) </span>{
-  fs.stat(file, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">callback</span>(<span class="hljs-params">err, stats</span>) </span>{
-    <span class="hljs-built_in">console</span>.log(file);
+<pre class="hljs">files.<span class="hljs-title function_">forEach</span>(<span class="hljs-keyword">function</span>(<span class="hljs-params">file</span>) {
+  fs.<span class="hljs-title function_">stat</span>(file, <span class="hljs-keyword">function</span> <span class="hljs-title function_">callback</span>(<span class="hljs-params">err, stats</span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(file);
   });
 });</pre><p>And we get the correct output as well.</p>
 <h2 id="so-should-i-use-let-for-everything-now">So, should I use <code class="hljs">let</code> for everything now?</h2>
 <p>First of all, not all JavaScript runtimes support <code class="hljs">let</code>  yet (node.js, IE&lt;11 and Safari are the biggest blockers currently), so you have to use transpilation which comes with a small cost.</p>
 <p>With the Babel transpiler (v5.4.3) the first solution from above is translated to a function that is invoked on every iteration:</p>
-<pre class="hljs"><span class="hljs-keyword">var</span> _loop = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+<pre class="hljs"><span class="hljs-keyword">var</span> _loop = <span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) {
   <span class="hljs-keyword">var</span> file = files[i];
-  fs.stat(file, <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">callback</span>(<span class="hljs-params">err, stats</span>) </span>{
-    <span class="hljs-built_in">console</span>.log(file);
+  fs.<span class="hljs-title function_">stat</span>(file, <span class="hljs-keyword">function</span> <span class="hljs-title function_">callback</span>(<span class="hljs-params">err, stats</span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(file);
   });
 };
 
-<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; files.length; ++i) {
-  _loop();
+<span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i = <span class="hljs-number">0</span>; i &lt; files.<span class="hljs-property">length</span>; ++i) {
+  <span class="hljs-title function_">_loop</span>();
 }</pre><p>This is a great solution performance-wise and, as a consequence, there is no reason to not replace every instance of <code class="hljs">var</code> with <code class="hljs">let</code> even in large codebases if you are willing to use Babel or you are only targeting environments like io.js or Firefox/Chrome/IE11 which support the <code class="hljs">let</code> statement natively.</p>
 <p><a href="https://news.ycombinator.com/item?id=9562506">HN comments</a></p>
 

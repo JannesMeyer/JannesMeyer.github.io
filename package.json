@@ -8,17 +8,15 @@
     "build": "tsc -p src && node ./dist/build.js"
   },
   "dependencies": {
-    "@types/highlight.js": "^9.12.4",
-    "@types/js-beautify": "^1.11.0",
-    "@types/marked": "^1.1.0",
-    "@types/mkdirp": "^1.0.1",
-    "@types/react": "^16.9.49",
-    "@types/react-dom": "^16.9.8",
-    "highlight.js": "^10.2.0",
-    "marked": "^1.1.1",
+    "@types/marked": "^4.0.3",
+    "@types/mkdirp": "^1.0.2",
+    "@types/react": "^18.0.8",
+    "@types/react-dom": "^18.0.3",
+    "highlight.js": "^11.5.1",
+    "marked": "^4.0.15",
     "mkdirp": "^1.0.4",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
-    "typescript": "^4.0.2"
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
+    "typescript": "^4.6.4"
   }
 }

@@ -6,15 +6,12 @@ interface P {
 	showPreview?: boolean;
 }
 
-export default class BlogPost extends React.Component<P> {
-	render() {
-		let p = this.props;
-		return <article className="BlogPost">
-			<time className="PublishDate">{p.post.dateStr}</time>
-			{p.showPreview && <h1><a href={p.post.path} dangerouslySetInnerHTML={{ __html: p.post.titleHTML }} /></h1>}
-			{!p.showPreview && <h1 dangerouslySetInnerHTML={{ __html: p.post.titleHTML }} />}
-			<div dangerouslySetInnerHTML={{ __html: (p.showPreview ? p.post.previewHTML || p.post.contentHTML : p.post.contentHTML) }} />
-			{p.showPreview && p.post.previewHTML && <a href={p.post.path + '#continue'}>Continue reading →</a>}
-		</article>;
-	}
+export default function BlogPost(p: P) {
+	return <article className="BlogPost">
+		<time className="PublishDate">{p.post.dateStr}</time>
+		{p.showPreview && <h1><a href={p.post.path} dangerouslySetInnerHTML={{ __html: p.post.titleHTML }} /></h1>}
+		{!p.showPreview && <h1 dangerouslySetInnerHTML={{ __html: p.post.titleHTML }} />}
+		<div dangerouslySetInnerHTML={{ __html: (p.showPreview ? p.post.previewHTML || p.post.contentHTML : p.post.contentHTML) }} />
+		{p.showPreview && p.post.previewHTML && <a href={p.post.path + '#continue'}>Continue reading →</a>}
+	</article>;
 }
