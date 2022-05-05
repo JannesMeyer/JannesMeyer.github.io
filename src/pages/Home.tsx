@@ -1,9 +1,9 @@
 import React from 'react';
-import Master from '../components/Master';
+import { Layout } from '../components/Layout';
 import Route from '../classes/Route';
 
 export default function PageHome({ route }: { route: Route }) {
-	return <Master title="Portfolio" path={route.path}>
+	return <Layout title="Portfolio" path={route.path}>
 
 		<article className="Hello">
 			<a href="/contact"><img src="/images/photo.png" width="100" height="100" /></a>
@@ -67,5 +67,5 @@ export default function PageHome({ route }: { route: Route }) {
 			</ul>
 		</article>
 
-	</Master>;
+	</Layout>;
 }

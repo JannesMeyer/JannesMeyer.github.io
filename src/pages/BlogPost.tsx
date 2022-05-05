@@ -1,7 +1,7 @@
 import React from 'react';
-import Master from '../components/Master';
 import { BlogPost } from '../components/BlogPost';
 import ArticleRoute from '../classes/ArticleRoute';
+import { Layout } from '../components/Layout';
 
 let head = <>
 	<link rel="stylesheet" href="/stylesheets/code-light.css" media="(prefers-color-scheme: no-preference), (prefers-color-scheme: light)" />
@@ -9,7 +9,7 @@ let head = <>
 </>;
 
 export default function PageBlogPost({ route: post }: { route: ArticleRoute }) {
-	return <Master title={post.title} path={post.path} head={head}>
+	return <Layout title={post.title} path={post.path} head={head}>
 		<BlogPost post={post} />
-	</Master>;
+	</Layout>;
 }

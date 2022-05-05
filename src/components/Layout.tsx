@@ -8,7 +8,7 @@ interface P {
 	children: React.ReactNode;
 }
 
-export default function Master(p: P) {
+export function Layout(p: P) {
 	return <html>
 		<head>
 			<title>{p.title}</title>

@@ -1,9 +1,9 @@
 import React from 'react';
-import Master from '../components/Master';
 import Route from '../classes/Route';
+import { Layout } from '../components/Layout';
 
 export default function PageNotFound({ route }: { route: Route }) {
-	return <Master title="Not Found" path={route.path}>
+	return <Layout title="Not Found" path={route.path}>
 		<h1>Not Found</h1>
-	</Master>;
+	</Layout>;
 };

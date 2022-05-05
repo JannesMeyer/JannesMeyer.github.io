@@ -4,10 +4,10 @@ import mkdirp from 'mkdirp';
 import routes, { articles } from './routes';
 import Route from './classes/Route';
 import ArticleRoute from './classes/ArticleRoute';
+import { copyFile } from './utils/copyFile';
 
 const baseUrl = 'https://jannesmeyer.com';
 const outputDir = path.join(__dirname, '../docs');
-const modulesDir = path.join(__dirname, '../node_modules');
 
 // Render files with React
 routes.forEach(generateFile);
@@ -16,19 +16,8 @@ routes.forEach(generateFile);
 generateAtomFeed(articles, '/blog/feed.xml');
 
 // Copy Highlight.js styles
-copyFile(path.join(modulesDir, 'highlight.js/styles/color-brewer.css'), path.join(outputDir, 'stylesheets/code-light.css'));
-copyFile(path.join(modulesDir, 'highlight.js/styles/agate.css'), path.join(outputDir, 'stylesheets/code-dark.css'));
-
-/** Copy a file to the destination */
-function copyFile(source: string, destination: string) {
-    // Make sure the directory exists
-	mkdirp.sync(path.dirname(destination));
-
-    // Copy via streams
-    let rs = fs.createReadStream(source);
-    let ws = fs.createWriteStream(destination);
-	rs.pipe(ws);
-}
+copyFile(require.resolve('highlight.js/styles/color-brewer.css'), path.join(outputDir, 'stylesheets/code-light.css'));
+copyFile(require.resolve('highlight.js/styles/agate.css'), path.join(outputDir, 'stylesheets/code-dark.css'));
 
 /** Generate static markup */
 function generateFile(route: Route) {

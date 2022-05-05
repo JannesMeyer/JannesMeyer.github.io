@@ -1,11 +1,11 @@
 import React from 'react';
-import Master from '../components/Master';
 import Route from '../classes/Route';
+import { Layout } from '../components/Layout';
 
 export default function PageContact({ route }: { route: Route }) {
-	return <Master title="Contact" path={route.path}>
+	return <Layout title="Contact" path={route.path}>
 		<article style={{ minHeight: 200 }}>
 			<a href="mailto:contact@jannesmeyer.com">contact@jannesmeyer.com</a>
 		</article>
-	</Master>;
+	</Layout>;
 }

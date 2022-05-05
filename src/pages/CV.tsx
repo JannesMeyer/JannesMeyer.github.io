@@ -1,10 +1,10 @@
 import React from "react";
-import Master from "../components/Master";
+import { Layout } from '../components/Layout';
 
 const head = <link rel="stylesheet" href="/stylesheets/cv.css" />;
 
 export default function PageCV() {
-    return <Master title="CV" head={head}>
+    return <Layout title="CV" head={head}>
         <article>
             <h1>Jannes Meyer</h1>
             <div className="links">
@@ -25,5 +25,5 @@ export default function PageCV() {
                 <li>Knowledge of international web standards and protocols</li>
             </ul>
         </article>
-    </Master>;
+    </Layout>;
 }
